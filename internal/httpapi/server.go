@@ -132,14 +132,13 @@ func (s *Server) handleItemByID(w http.ResponseWriter, r *http.Request) {
     }
 }
 
-// writeJSON helper
+// helpers
 func writeJSON(w http.ResponseWriter, status int, v any) {
     w.Header().Set("Content-Type", "application/json")
     w.WriteHeader(status)
     _ = json.NewEncoder(w).Encode(v)
 }
 
-// nonEmptyTrimmed helper
 func nonEmptyTrimmed(s *string) (string, bool) {
     if s == nil {
         return "", false

@@ -8,10 +8,9 @@ import (
 )
 
 // MemoryItemStore adalah penyimpanan in-memory sederhana.
-// TODO: Kandidat mengimplementasikan isi struct, concurrency-safe jika perlu.
 type MemoryItemStore struct {
     items   map[string]model.Item
-    mu      sync.Mutex
+    mu      sync.RWMutex
     count   int
 }
 
@@ -38,8 +37,8 @@ func (m *MemoryItemStore) Create(name string) (model.Item, error) {
 }
 
 func (m *MemoryItemStore) Get(id string) (model.Item, error) {
-    m.mu.Lock()
-    defer m.mu.Unlock()
+    m.mu.RLock()
+    defer m.mu.RUnlock()
 
     item, exists := m.items[id]
     if !exists {
@@ -50,8 +49,8 @@ func (m *MemoryItemStore) Get(id string) (model.Item, error) {
 }
 
 func (m *MemoryItemStore) List() ([]model.Item, error) {
-    m.mu.Lock()
-    defer m.mu.Unlock()
+    m.mu.RLock()
+    defer m.mu.RUnlock()
 
     items := make([]model.Item, 0, len(m.items))
     for _, item := range m.items {
